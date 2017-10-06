@@ -1,0 +1,36 @@
+(ns mine-sweeper.board
+  (:require [mine-sweeper.tiles :as t]
+            [clojure.string :as s]))
+
+(defrecord Board [dimensions tiles])
+
+(defn- raw-index-of [x y board-width]
+  (+ (* y board-width) x))
+
+(defn- index-of [board x y]
+  (raw-index-of x y
+                (-> board :dimensions first)))
+
+(defn inbounds? [board x y]
+  (let [[w h] (:dimensions board)]
+    (and (< -1 x w)
+         (< -1 y h))))
+
+(defn new-board [width height initial-board-contents]
+  (->Board [width height]
+           (vec (repeat (* width height) initial-board-contents))))
+
+(defn set-cell [board x y contents]
+  (assoc-in board [:tiles (index-of board x y)] contents))
+
+(defn get-cell [board x y]
+  (get-in board [:tiles (index-of board x y)]))
+
+(defn pretty-format [board]
+  (let [[w] (:dimensions board)
+        tiles (:tiles board)]
+    (s/join "\n"
+       (map #(s/join " " %) (partition w tiles)))))
+
+(defn pprint [board]
+  (println (pretty-format board)))
