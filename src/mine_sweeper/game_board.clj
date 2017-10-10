@@ -16,11 +16,15 @@
           board
           (-> board :dimensions (first) (range))))
 
+; TODO:
+;  - placeMine, placeFlag removeFlag, uncover-tile...
+
 (def divided-test-board
   (-> (b/new-board 7 3 :-)
       (draw-hor-divider 2 :#)))
 
 (def bigger-divided-test-board
-  (-> (b/new-board 7 7 :-)
-      (draw-hor-divider 2 :#)
-      (draw-vert-divider 4 :#)))
+  (-> (b/new-board 25 25 :-)
+      (draw-hor-divider 13 :#)
+      (draw-vert-divider 13 :#)))
+

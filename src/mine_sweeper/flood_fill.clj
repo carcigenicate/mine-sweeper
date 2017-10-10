@@ -35,7 +35,7 @@
                 self-flooded (conj flooded current-coord)
 
                 no-repeat-frontier (remove self-flooded (into rest-frontier inbound-neighbors))
-                no-divider-frontier (filter pred'' no-repeat-frontier)]
+                no-divider-frontier (filterv pred'' no-repeat-frontier)]
 
             (recur
               no-divider-frontier
