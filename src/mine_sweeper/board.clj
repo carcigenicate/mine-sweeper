@@ -1,5 +1,5 @@
 (ns mine-sweeper.board
-  (:require [mine-sweeper.tiles :as t]
+  (:require [mine-sweeper.tile :as t]
             [clojure.string :as s]))
 
 (defrecord Board [dimensions tiles])
@@ -20,11 +20,15 @@
   (->Board [width height]
            (vec (repeat (* width height) initial-board-contents))))
 
-(defn set-cell [board x y contents]
+(defn set-tile [board x y contents]
   (assoc-in board [:tiles (index-of board x y)] contents))
 
-(defn get-cell [board x y]
+(defn get-tile [board x y]
   (get-in board [:tiles (index-of board x y)]))
+
+(defn update-tile [board x y f]
+  (set-tile board x y
+    (f (get-tile board x y))))
 
 (defn pretty-format [board]
   (let [[w] (:dimensions board)

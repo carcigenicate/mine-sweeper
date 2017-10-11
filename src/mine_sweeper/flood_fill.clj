@@ -1,6 +1,6 @@
 (ns mine-sweeper.flood-fill
   (:require [mine-sweeper.board :as b]
-            [mine-sweeper.tiles :as t]))
+            [mine-sweeper.tile :as t]))
 
 (defn floodable-coords-surrounding [board center-x center-y]
   (let [[w h] (:dimensions board)]
@@ -13,13 +13,13 @@
 (defn remove-terminating-coords [board visited pred coords]
   (remove (fn [[x y :as p]]
             (or (visited p)
-                (not (pred (b/get-cell board x y)))))
+                (not (pred (b/get-tile board x y)))))
 
           coords))
 ; TODO: Breakup
 (defn flood-fill-while [board fill-x fill-y fill-contents pred]
   (let [initial-fill [fill-x fill-y]
-        pred' (fn [b [cx cy]] (pred (b/get-cell b cx cy)))]
+        pred' (fn [b [cx cy]] (pred (b/get-tile b cx cy)))]
 
     (if (pred' board initial-fill)
       (loop [frontier [initial-fill]
@@ -41,7 +41,7 @@
               no-divider-frontier
               self-flooded
               (if (pred'' [x y])
-                (b/set-cell acc-board x y fill-contents)
+                (b/set-tile acc-board x y fill-contents)
                 acc-board)))
 
           acc-board))
