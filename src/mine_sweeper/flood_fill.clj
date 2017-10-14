@@ -9,25 +9,24 @@
           :when (and (not= [x y] [center-x center-y])
                      (b/inbounds? board x y))]
       [x y])))
-#_ ; Unnecessary? Too many parameters?
-(defn remove-terminating-coords [board visited pred coords]
-  (remove (fn [[x y :as p]]
-            (or (visited p)
-                (not (pred (b/get-tile board x y)))))
 
-          coords))
+(defn- modify-tile-with? [board coord pred-map-f]
+  (let [[x y] coord]
+    (when-let [new-tile (pred-map-f (b/get-tile board x y))]
+      (b/set-tile board x y new-tile))))
+
 ; TODO: Breakup
-(defn flood-fill-while [board fill-x fill-y fill-contents pred]
+(defn flood-fill-while [board fill-x fill-y pred-map-f]
   (let [initial-fill [fill-x fill-y]
-        pred' (fn [b [cx cy]] (pred (b/get-tile b cx cy)))]
+        modify? (fn [b c] (modify-tile-with? b c pred-map-f))]
 
-    (if (pred' board initial-fill)
+    (if (modify? board initial-fill)
       (loop [frontier [initial-fill]
              flooded #{}
              acc-board board]
 
         (if-not (empty? frontier)
-          (let [pred'' (partial pred' acc-board)
+          (let [modify?' (partial modify? acc-board)
                 [[x y :as current-coord] & rest-frontier] frontier
 
                 inbound-neighbors (floodable-coords-surrounding acc-board x y)
@@ -35,14 +34,12 @@
                 self-flooded (conj flooded current-coord)
 
                 no-repeat-frontier (remove self-flooded (into rest-frontier inbound-neighbors))
-                no-divider-frontier (filterv pred'' no-repeat-frontier)]
+                no-divider-frontier (filterv modify?' no-repeat-frontier)]
 
             (recur
               no-divider-frontier
               self-flooded
-              (if (pred'' [x y])
-                (b/set-tile acc-board x y fill-contents)
-                acc-board)))
+              (or (modify?' [x y]) acc-board)))
 
           acc-board))
 

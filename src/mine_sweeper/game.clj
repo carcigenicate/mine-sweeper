@@ -9,6 +9,7 @@
   (let [[w h] board-dimensions]
     (->Game (gb/new-game-board w h) 0)))
 
+#_ ; TODO: Finish
 (defn uncover-cell? [game x y]
   (let [b (:board game)]
     (when-let [uncovered-board (gb/uncover-tile? b x y)]

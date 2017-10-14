@@ -4,6 +4,7 @@
             [mine-sweeper.flood-fill :as ff]))
 
 ; TODO: Need to store hint information somewhere? Calc as needed?
+; TODO: Test ->>>>
 
 (defn new-game-board [width height]
   (b/new-board width height (t/new-tile ::t/empty)))
@@ -39,26 +40,26 @@
       (-> board
           (unflag-tile x y)
           (b/update-tile x y uncover-tile)))))
-
+#_
 (defn flood-fill-empty-tiles-at [board x y]
   ; FIXME: DA HUR DUR. We can't set a filler, since it requires modifying the uncovered? field.
   ; Also accept a function that modifies the board square? Fk.
-  (ff/flood-fill-while board x y :))
+  (ff/flood-fill-while board x y))
 
 ; ---------- Tests ----------
 
 (defn draw-hor-divider [board x divider-contents]
-  (reduce #(b/set-tile % x %2 divider-contents)
+  (reduce #(b/set-tile % x %2 (t/new-tile divider-contents))
           board
           (-> board :dimensions (second) (range))))
 
 (defn draw-vert-divider [board y divider-contents]
-  (reduce #(b/set-tile % %2 y divider-contents)
+  (reduce #(b/set-tile % %2 y (t/new-tile divider-contents))
           board
           (-> board :dimensions (first) (range))))
 
 (def divided-test-board
-  (-> (b/new-board 7 3 :-)
+  (-> (new-game-board 7 3)
       (draw-hor-divider 2 :#)))
 
 (def bigger-divided-test-board

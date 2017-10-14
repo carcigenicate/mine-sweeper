@@ -1,15 +1,13 @@
 (ns mine-sweeper.board
   (:require [mine-sweeper.tile :as t]
+            [mine-sweeper.helpers :as mh]
             [clojure.string :as s]))
 
 (defrecord Board [dimensions tiles])
 
-(defn- raw-index-of [x y board-width]
-  (+ (* y board-width) x))
-
 (defn- index-of [board x y]
-  (raw-index-of x y
-                (-> board :dimensions first)))
+  (mh/index-of x y
+     (-> board :dimensions first)))
 
 (defn inbounds? [board x y]
   (let [[w h] (:dimensions board)]

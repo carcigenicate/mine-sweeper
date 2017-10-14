@@ -14,7 +14,9 @@
   {::hint hint-n})
 
 (defn contains-hint? [tile]
-  (contains? (:contents tile) ::hint))
+  (let [c (:contents tile)]
+    (and (associative? c)
+         (contains? c ::hint))))
 
 (def tile-contents #{::bomb
                      ::hint
